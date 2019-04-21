@@ -15,6 +15,8 @@
  */
 package com.example.android.datafrominternet.utilities;
 
+import android.net.Uri;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -26,17 +28,17 @@ import java.util.Scanner;
  */
 public class NetworkUtils {
 
-    final static String GITHUB_BASE_URL =
+    private final static String GITHUB_BASE_URL =
             "https://api.github.com/search/repositories";
 
-    final static String PARAM_QUERY = "q";
+    private final static String PARAM_QUERY = "q";
 
     /*
      * The sort field. One of stars, forks, or updated.
      * Default: results are sorted by best match if no field is specified.
      */
-    final static String PARAM_SORT = "sort";
-    final static String sortBy = "stars";
+    private final static String PARAM_SORT = "sort";
+    private final static String sortBy = "stars";
 
     /**
      * Builds the URL used to query GitHub.
@@ -45,8 +47,20 @@ public class NetworkUtils {
      * @return The URL to use to query the GitHub server.
      */
     public static URL buildUrl(String githubSearchQuery) {
-        // TODO (1) Fill in this method to build the proper GitHub query URL
-        return null;
+        Uri builtUri = Uri.parse(GITHUB_BASE_URL).buildUpon()
+                .appendQueryParameter(PARAM_QUERY, githubSearchQuery)
+                .appendQueryParameter(PARAM_SORT, sortBy).build();
+
+        URL returnVal = null;
+        try
+        {
+            returnVal = new URL(builtUri.toString());
+        }
+        catch (java.net.MalformedURLException ex)
+        {
+            ex.printStackTrace();
+        }
+        return returnVal;
     }
 
     /**
